@@ -1,7 +1,7 @@
 ---
 id: 001
 date: 2026-05-14
-version: 25.6.0
+version: 26.5.0
 type: feature
 ---
 
@@ -15,7 +15,7 @@ type: feature
   - `SearchWatermarks` — find existing watermarks (text and image) in a document and return their type, text, page, position, size, and rotation as JSON.
   - `RemoveWatermarks` — remove existing watermarks from a document and save the cleaned copy as `<name>_unwatermarked.<ext>`. Optional `textFilter` argument scopes removal to watermarks whose text contains a given substring.
   - `GetDocumentInfo` — return the file type, page count, size, and per-page dimensions of a document as JSON (without modifying it). Useful as a precondition check before AddWatermark / SearchWatermarks.
-- Installable via `dnx GroupDocs.Watermark.Mcp@25.6.0 --yes` (.NET 10 SDK required) or `dotnet tool install -g`.
+- Installable via `dnx GroupDocs.Watermark.Mcp@26.5.0 --yes` (.NET 10 SDK required) or `dotnet tool install -g`.
 - Docker image published to `ghcr.io/groupdocs-watermark/watermark-net-mcp` and `docker.io/groupdocs/watermark-net-mcp`.
 - Environment variables: `GROUPDOCS_MCP_STORAGE_PATH`, optional `GROUPDOCS_MCP_OUTPUT_PATH`, `GROUPDOCS_LICENSE_PATH`.
 - Linux native graphics deps wired up: `SkiaSharp.NativeAssets.Linux.NoDependencies` (3.119.0) is referenced because `GroupDocs.Watermark` 26.4.0 transitively requires SkiaSharp ≥ 3.119.0; `libgdiplus` + `libfontconfig1` + `ttf-mscorefonts-installer` are installed in the Docker image (and the Tests-repo integration workflow) because Watermark's PDF and Diagram content paths use `System.Drawing.Font` / `Color` / `FontFamily` / `FontStyle`; the `System.Drawing.EnableUnixSupport` runtime flag is set in the csproj for the same reason.

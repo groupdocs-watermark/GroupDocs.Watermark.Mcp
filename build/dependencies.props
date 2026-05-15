@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Package Versions">
-    <GroupDocsWatermarkMcp>25.6.0</GroupDocsWatermarkMcp>
+    <GroupDocsWatermarkMcp>26.5.0</GroupDocsWatermarkMcp>
   </PropertyGroup>
 
   <PropertyGroup Label="External Dependency Versions">
