@@ -1,0 +1,42 @@
+# GroupDocs.Watermark MCP Server
+
+MCP server for GroupDocs.Watermark — add, search, and remove document watermarks via AI agents. Wraps GroupDocs.Watermark for .NET and exposes it as tool calls for Claude, Cursor, VS Code / GitHub Copilot, and other MCP-compatible clients. Supports PDF, DOCX, XLSX, PPTX, PNG, JPG, VSDX, and 50+ more document and image formats. Exposes AddWatermark, AddImageWatermark, SearchWatermarks, RemoveWatermarks, and GetDocumentInfo tools.
+
+## Install
+
+- With dnx (.NET 10 SDK, no install step): `dnx GroupDocs.Watermark.Mcp@25.6.0 --yes`
+- As a global dotnet tool: `dotnet tool install -g GroupDocs.Watermark.Mcp` then run `groupdocs-watermark-mcp`
+- As a Docker container: `docker run --rm -i -v $(pwd)/documents:/data ghcr.io/groupdocs-watermark/watermark-net-mcp:latest`
+
+## MCP tools
+
+- AddWatermark — add a text watermark (Arial, configurable font size + rotation) to a document and save the watermarked copy. Returns a saved-path message and download URL.
+- AddImageWatermark — add an image watermark (logo, signature scan, stamp) to a document. Configurable opacity + rotation. Returns a saved-path message and download URL.
+- SearchWatermarks — find existing watermarks (text + image) in a document and return their type, text, page, position, size, and rotation as JSON.
+- RemoveWatermarks — remove existing watermarks from a document and save the cleaned copy. Optional text filter to scope removal to matching watermarks only.
+- GetDocumentInfo — return file type, page count, size, and per-page dimensions of a document as JSON. Does not modify the document.
+
+## Supported formats
+
+PDF, DOCX, XLSX, PPTX, ODT, RTF, HTML, PNG, JPG, TIFF, BMP, GIF, MSG, EML, and 50+ other document and image formats.
+
+## Environment variables
+
+- GROUPDOCS_MCP_STORAGE_PATH — base folder for input + output (defaults to current working directory)
+- GROUPDOCS_MCP_OUTPUT_PATH — optional, routes output files to a separate folder
+- GROUPDOCS_LICENSE_PATH — path to GroupDocs.Total.lic, omit for evaluation mode (in evaluation mode the output document may include an additional evaluation watermark alongside the user-requested one)
+
+## Key links
+
+- NuGet: https://www.nuget.org/packages/GroupDocs.Watermark.Mcp
+- Repository: https://github.com/groupdocs-watermark/GroupDocs.Watermark.Mcp
+- Docker: ghcr.io/groupdocs-watermark/watermark-net-mcp and docker.io/groupdocs/watermark-net-mcp
+- License: MIT
+
+## Example prompts for AI agents
+
+- "Add a DRAFT watermark to report.pdf"
+- "Stamp 'CONFIDENTIAL' as a watermark on contract.docx with 24-point font and -30 degree rotation"
+- "What watermarks does invoice.pdf contain?"
+- "Search slides.pptx for watermarks and tell me which pages have them"
+- "List the watermarks in original.docx and final.docx — is anything different?"

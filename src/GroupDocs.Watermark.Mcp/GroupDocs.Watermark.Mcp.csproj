@@ -1,0 +1,75 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>GroupDocs.Watermark.Mcp</PackageId>
+    <Version>$(GroupDocsWatermarkMcp)</Version>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Description>MCP server exposing GroupDocs.Watermark for .NET — add text + image watermarks, search and remove existing watermarks, and inspect document info across PDF, Office, image, and 50+ document formats via AI agents.</Description>
+    <PackageTags>groupdocs;watermark;mcp;model-context-protocol;mcp-server;dotnet-tool;ai;document-watermark;pdf-watermark</PackageTags>
+    <PackageIcon>images\icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IsPackable>true</IsPackable>
+    <!-- Package as a .NET tool so the nupkg gets the required tools/ layout
+         for `dnx` / `dotnet tool install` invocation. -->
+    <PackAsTool>true</PackAsTool>
+    <!-- Mark as MCP server for NuGet.org discovery (packagetype=McpServer filter).
+         NOTE: correct MSBuild property is singular <PackageType>; the plural form is ignored. -->
+    <PackageType>McpServer</PackageType>
+    <!-- CLI tool name for dnx / dotnet tool install invocation -->
+    <ToolCommandName>groupdocs-watermark-mcp</ToolCommandName>
+  </PropertyGroup>
+
+  <!-- Strip native debug symbols (libSkiaSharp.pdb x3 ≈ 243 MB uncompressed)
+       from the published tools/ output BEFORE pack collects it. With these
+       PDBs included the nupkg lands at ~291 MB, exceeding NuGet.org's 250 MB
+       hard limit and failing publish with HTTP 413 RequestEntityTooLarge.
+       The managed-code PDB is preserved — only runtimes/<rid>/native/*.pdb
+       files are removed. We can't symbolize native frames in production
+       anyway. NOTE: <CopyDebugSymbolFilesFromPackages>false</...> does NOT
+       cover this path — runtimes/<rid>/native/*.pdb files reach the publish
+       output via a separate runtime-asset code path that property doesn't
+       intercept. An explicit Delete target after Publish does. -->
+  <Target Name="StripNativeRuntimePdbs" AfterTargets="Publish">
+    <ItemGroup>
+      <_NativeRuntimePdbs Include="$(PublishDir)runtimes/**/*.pdb" />
+    </ItemGroup>
+    <Delete Files="@(_NativeRuntimePdbs)" />
+    <Message
+      Text="StripNativeRuntimePdbs: removed @(_NativeRuntimePdbs->Count()) native PDB file(s) from publish output to keep the nupkg under NuGet.org's 250 MB limit."
+      Importance="high"
+      Condition="@(_NativeRuntimePdbs->Count()) > 0" />
+  </Target>
+
+  <ItemGroup>
+    <None Include="..\..\assets\icon.png" Pack="true" Visible="false" PackagePath="images\icon.png" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="/" />
+    <!-- server.json — read by NuGet.org to generate mcp.json snippets on the package page -->
+    <None Include=".mcp\server.json" Pack="true" PackagePath=".mcp/server.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Core infrastructure — NuGet packages from groupdocs-mcp-core -->
+    <PackageReference Include="GroupDocs.Mcp.Core" Version="$(GroupDocsMcpCore)" />
+    <PackageReference Include="GroupDocs.Mcp.Local.Storage" Version="$(GroupDocsMcpCore)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GroupDocs.Watermark" Version="$(GroupDocsWatermark)" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(MicrosoftExtensionsHosting)" />
+    <PackageReference Include="ModelContextProtocol" Version="$(ModelContextProtocol)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- GroupDocs.Watermark 26.4.0's nuspec declares both SkiaSharp (managed) and SkiaSharp.NativeAssets.Linux.NoDependencies. Pin explicitly so transitive resolution stays deterministic across upstream bumps and so the native Linux .so is always present. -->
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="$(SkiaSharp)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- GroupDocs.Watermark's PDF and Diagram content paths call System.Drawing.Common internally (Font/Color/FontFamily/FontStyle on font rendering). On non-Windows that throws PlatformNotSupportedException unless this flag is set. Pair with libgdiplus + libfontconfig1 in docker/Dockerfile. Drop once upstream migrates off System.Drawing — flag was removed in System.Drawing.Common 7.0+. -->
+    <RuntimeHostConfigurationOption Include="System.Drawing.EnableUnixSupport" Value="true" />
+  </ItemGroup>
+
+</Project>
