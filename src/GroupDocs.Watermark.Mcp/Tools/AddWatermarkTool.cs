@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Text;
 using GroupDocs.Mcp.Core;
 using GroupDocs.Mcp.Core.Licensing;
 using GroupDocs.Watermark.Common;
@@ -74,23 +73,12 @@ public static class AddWatermarkTool
             // Pattern lifted from Conversion 26.5.2 — diagnostics for native-deps
             // issues on Linux (missing fonts, libgdiplus) without requiring local
             // reproduction.
-            return FormatException(ex, resolved.FileName, text);
+            return ToolError.Format("Watermarking", resolved.FileName, ex, $"(text='{text}')");
         }
         finally
         {
             if (File.Exists(tempInput)) File.Delete(tempInput);
             if (File.Exists(tempOutput)) File.Delete(tempOutput);
         }
-    }
-
-    private static string FormatException(Exception ex, string fileName, string watermarkText)
-    {
-        var sb = new StringBuilder();
-        sb.Append($"Watermarking failed for '{fileName}' (text='{watermarkText}'): ");
-        sb.Append($"{ex.GetType().FullName}: {ex.Message}");
-        var inner = ex.InnerException;
-        for (int depth = 0; inner != null && depth < 5; depth++, inner = inner.InnerException)
-            sb.Append($" | inner({depth}): {inner.GetType().FullName}: {inner.Message}");
-        return sb.ToString();
     }
 }

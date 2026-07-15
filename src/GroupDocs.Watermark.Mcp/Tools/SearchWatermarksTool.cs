@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Text;
 using System.Text.Json;
 using GroupDocs.Mcp.Core;
 using GroupDocs.Mcp.Core.Licensing;
@@ -62,22 +61,11 @@ public static class SearchWatermarksTool
         }
         catch (Exception ex)
         {
-            return FormatException(ex, resolved.FileName);
+            return ToolError.Format("Search", resolved.FileName, ex);
         }
         finally
         {
             if (File.Exists(tempInput)) File.Delete(tempInput);
         }
-    }
-
-    private static string FormatException(Exception ex, string fileName)
-    {
-        var sb = new StringBuilder();
-        sb.Append($"Search failed for '{fileName}': ");
-        sb.Append($"{ex.GetType().FullName}: {ex.Message}");
-        var inner = ex.InnerException;
-        for (int depth = 0; inner != null && depth < 5; depth++, inner = inner.InnerException)
-            sb.Append($" | inner({depth}): {inner.GetType().FullName}: {inner.Message}");
-        return sb.ToString();
     }
 }
