@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Text;
 using GroupDocs.Mcp.Core;
 using GroupDocs.Mcp.Core.Licensing;
 using GroupDocs.Watermark.Common;
@@ -72,7 +71,7 @@ public static class AddImageWatermarkTool
         }
         catch (Exception ex)
         {
-            return FormatException(ex, resolved.FileName, resolvedImage.FileName);
+            return ToolError.Format("Image watermarking", resolved.FileName, ex, $"(image='{resolvedImage.FileName}')");
         }
         finally
         {
@@ -80,16 +79,5 @@ public static class AddImageWatermarkTool
             if (File.Exists(tempImage)) File.Delete(tempImage);
             if (File.Exists(tempOutput)) File.Delete(tempOutput);
         }
-    }
-
-    private static string FormatException(Exception ex, string fileName, string imageName)
-    {
-        var sb = new StringBuilder();
-        sb.Append($"Image watermarking failed for '{fileName}' (image='{imageName}'): ");
-        sb.Append($"{ex.GetType().FullName}: {ex.Message}");
-        var inner = ex.InnerException;
-        for (int depth = 0; inner != null && depth < 5; depth++, inner = inner.InnerException)
-            sb.Append($" | inner({depth}): {inner.GetType().FullName}: {inner.Message}");
-        return sb.ToString();
     }
 }
