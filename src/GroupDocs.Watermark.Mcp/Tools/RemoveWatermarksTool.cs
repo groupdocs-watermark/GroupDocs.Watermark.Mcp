@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Text;
 using GroupDocs.Mcp.Core;
 using GroupDocs.Mcp.Core.Licensing;
 using GroupDocs.Watermark.Options;
@@ -71,24 +70,13 @@ public static class RemoveWatermarksTool
         }
         catch (Exception ex)
         {
-            return FormatException(ex, resolved.FileName, textFilter);
+            var suffix = string.IsNullOrEmpty(textFilter) ? null : $"(filter: '{textFilter}')";
+            return ToolError.Format("Watermark removal", resolved.FileName, ex, suffix);
         }
         finally
         {
             if (File.Exists(tempInput)) File.Delete(tempInput);
             if (File.Exists(tempOutput)) File.Delete(tempOutput);
         }
-    }
-
-    private static string FormatException(Exception ex, string fileName, string? textFilter)
-    {
-        var sb = new StringBuilder();
-        sb.Append($"Watermark removal failed for '{fileName}'");
-        if (!string.IsNullOrEmpty(textFilter)) sb.Append($" (filter: '{textFilter}')");
-        sb.Append($": {ex.GetType().FullName}: {ex.Message}");
-        var inner = ex.InnerException;
-        for (int depth = 0; inner != null && depth < 5; depth++, inner = inner.InnerException)
-            sb.Append($" | inner({depth}): {inner.GetType().FullName}: {inner.Message}");
-        return sb.ToString();
     }
 }
