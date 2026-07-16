@@ -24,17 +24,20 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Package Versions">
-    <GroupDocsWatermarkMcp>26.5.0</GroupDocsWatermarkMcp>
+    <GroupDocsWatermarkMcp>26.7.0</GroupDocsWatermarkMcp>
   </PropertyGroup>
 
   <PropertyGroup Label="External Dependency Versions">
     <GroupDocsMcpCore>26.4.1</GroupDocsMcpCore>
-    <GroupDocsWatermark>26.4.0</GroupDocsWatermark>
+    <GroupDocsWatermark>26.6.0</GroupDocsWatermark>
     <MicrosoftExtensionsHosting>10.0.5</MicrosoftExtensionsHosting>
     <ModelContextProtocol>1.1.0</ModelContextProtocol>
     <MicrosoftSourceLinkGithub>8.0.0</MicrosoftSourceLinkGithub>
-    <!-- Must match the SkiaSharp version $(GroupDocsWatermark) transitively pulls. Re-verify after every GroupDocsWatermark bump (ABI-incompatible otherwise). -->
-    <SkiaSharp>3.119.0</SkiaSharp>
+    <!-- SkiaSharp pin removed at 26.6.0: the GroupDocs.Watermark.Net100 runtime
+         sub-package (resolved under net10.0) now declares SkiaSharp 3.119.0 +
+         SkiaSharp.NativeAssets.Linux.NoDependencies transitively, so the manual
+         csproj ref is redundant — libSkiaSharp.so ships via transitive resolution.
+         See pitfall S in docs/mcp-update-agent.md. -->
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet Common Settings">

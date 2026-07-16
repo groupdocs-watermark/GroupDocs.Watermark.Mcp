@@ -63,11 +63,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- GroupDocs.Watermark 26.4.0's nuspec declares both SkiaSharp (managed) and SkiaSharp.NativeAssets.Linux.NoDependencies. Pin explicitly so transitive resolution stays deterministic across upstream bumps and so the native Linux .so is always present. -->
-    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="$(SkiaSharp)" />
-  </ItemGroup>
+    <!-- NOTE (26.6.0 TFM split): the manual SkiaSharp.NativeAssets.Linux.NoDependencies
+         workaround was removed here. GroupDocs.Watermark 26.6.0 now ships a dedicated
+         net10.0 runtime sub-package (GroupDocs.Watermark.Net100) which, resolved under
+         net10.0, declares SkiaSharp 3.119.0 + SkiaSharp.NativeAssets.Linux.NoDependencies
+         transitively — so libSkiaSharp.so ships without our help. The .NoDependencies
+         variant is self-contained (no system libfontconfig1 needed for Skia itself),
+         but Watermark still renders Arial glyphs via System.Drawing, so libgdiplus +
+         libfontconfig1 + ttf-mscorefonts-installer remain in docker/Dockerfile and the
+         Tests-repo integration.yml. See pitfall S in docs/mcp-update-agent.md. -->
 
-  <ItemGroup>
     <!-- GroupDocs.Watermark's PDF and Diagram content paths call System.Drawing.Common internally (Font/Color/FontFamily/FontStyle on font rendering). On non-Windows that throws PlatformNotSupportedException unless this flag is set. Pair with libgdiplus + libfontconfig1 in docker/Dockerfile. Drop once upstream migrates off System.Drawing — flag was removed in System.Drawing.Common 7.0+. -->
     <RuntimeHostConfigurationOption Include="System.Drawing.EnableUnixSupport" Value="true" />
   </ItemGroup>
