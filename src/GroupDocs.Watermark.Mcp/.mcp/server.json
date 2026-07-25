@@ -2,13 +2,13 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
   "description": "MCP server for GroupDocs.Watermark — add and search document watermarks via AI agents.",
   "name": "io.github.groupdocs-watermark/groupdocs-watermark-mcp",
-  "version": "26.7.1",
+  "version": "26.7.2",
   "packages": [
     {
       "registryType": "nuget",
       "registryBaseUrl": "https://api.nuget.org/v3/index.json",
       "identifier": "GroupDocs.Watermark.Mcp",
-      "version": "26.7.1",
+      "version": "26.7.2",
       "transport": {
         "type": "stdio"
       },
